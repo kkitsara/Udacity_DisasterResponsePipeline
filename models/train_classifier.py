@@ -30,7 +30,16 @@ import pickle
 
 
 def load_data(database_filepath):
-
+    """
+    This is the function that load the data from the SQL lite DB and prepares the X and y datasets for the model
+    
+    Input
+    database_filepath - the path and name of the SQL lite DB
+    
+    Output
+    Returns the X and y datasents for the model and also the column names of y dataset
+    """
+    
     engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql_table('DisasterResponse', engine) 
     X = df['message']
@@ -41,6 +50,16 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    """
+    This is the function that performs the tokenization in a text message
+    
+    Input
+    text - the text message
+    
+    Output
+    Returns the clean_tokens list of the text message
+    """
+    
     #remove punctuation characters
     text = text.translate(str.maketrans('', '', string.punctuation))
     #lemmatize, convert to lowercase, remove leading/trailing white space
@@ -50,8 +69,6 @@ def tokenize(text):
     words = word_tokenize(text)
     #stop words removal
     words = [w for w in words if w not in stopwords.words("english")]
-    #Stemming
-    words = [PorterStemmer().stem(w) for w in words]
     clean_tokens = []
     for tok in words:
         clean_tokens.append(tok)
@@ -59,14 +76,42 @@ def tokenize(text):
 
 
 def build_model():
+    """
+    This is the function that creates the ML pipeline
+    
+    Input
+    No input
+    
+    Output
+    Returns ML pipeline
+    """
+    parameters = {
+        'vect__ngram_range': ((1, 1), (1, 2)),
+        'clf__estimator__bootstrap': (True, False)
+    }
+    
     pipeline = Pipeline([('vect',CountVectorizer(tokenizer=tokenize)),
                      ('tfidf',TfidfTransformer()),
                      ('clf',MultiOutputClassifier(RandomForestClassifier())),
                     ])
     
-    return pipeline
+    cv = GridSearchCV(pipeline, parameters)
+    
+    return cv
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    """
+    This is the function that evaluates the model
+    
+    Input
+    model - the model
+    X_test - The X_test dataset
+    Y_test - The Y_test dataset
+    category_names - the column names of the Y_test
+    
+    Output
+    No output
+    """
     
     #predict on test data
     y_pred = model.predict(X_test)
@@ -75,11 +120,24 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
+    """
+    This is the function that saves the final model in a pickle file
+    
+    Input
+    model - the model
+    model_filepath - the path of the pickle file
+    
+    Output
+    No output
+    """
     
     pickle.dump(model,open(model_filepath,'wb'))
 
 
 def main():
+    """
+    The main function that calls the rest ones
+    """
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
