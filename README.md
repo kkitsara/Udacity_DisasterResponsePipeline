@@ -24,6 +24,7 @@ app/templates/master.html - The html code used by the site
 
 Summary of  the project!
 The purpose of the project is to build an online classifier that accepts as input disaster messages and classifies them into different categories.
+It helps an organization to classify quickly some text messages into categories in order to filter in only the relevant messages in case of a disaster.
 The project consists of the below parts:
 
 ETL Pipeline Build
