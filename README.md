@@ -6,17 +6,21 @@ LICENSE - The license file
 
 ETL Pipeline Preparation.ipynb - The jupyter notebook that includes the ETL of cleaning and preparing the data
 
-process_data.py - The python code that does the same activities as the jupyter notebook for the ETL pipeline
+data/process_data.py - The python code that does the same activities as the jupyter notebook for the ETL pipeline
 
 ML Pipeline Preparation.ipynb - The jupyter notebook that includes the build of the ML pipeline and the storage of the model
 
-train_classifier.py - The python code that does the same activities as the jupyter notebook for the ML pipeline
+models/train_classifier.py - The python code that does the same activities as the jupyter notebook for the ML pipeline
 
-disaster_messages.7z - The dataset of the disaster messages zipped
+data/disaster_messages.csv - The dataset of the disaster messages
 
-disaster_categories.7z - The dataset that holds the disaster messages categories zipped
+data/disaster_categories.csv - The dataset that holds the disaster messages categories
 
-run.py - The python code that starts the site
+app/run.py - The python code that starts the site
+
+app/templates/go.html - The html code used by the site
+
+app/templates/master.html - The html code used by the site
 
 The purpose of the project is to build an online classifier that accepts as input disaster messages and classifies them into different categories.
 The project consists of the below parts:
