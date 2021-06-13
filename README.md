@@ -22,6 +22,7 @@ app/templates/go.html - The html code used by the site
 
 app/templates/master.html - The html code used by the site
 
+Summary of  the project!
 The purpose of the project is to build an online classifier that accepts as input disaster messages and classifies them into different categories.
 The project consists of the below parts:
 
