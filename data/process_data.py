@@ -3,6 +3,16 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
+    """
+    This is the function that load the data from csv files
+    
+    Input
+    messages_filepath - the path of the messages csv dataset
+    categories_filepath - the path of the categories csv dataset
+    
+    Output
+    Returns a dataframe with joined the 2 datasets
+    """
     
     #Load messages
     messages = pd.read_csv(messages_filepath)
@@ -15,20 +25,29 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
+    """
+    This is the function that cleans the data of the joined df
+    
+    Input
+    df - the df as we read it
+    
+    Output
+    Returns a cleaned df
+    """
     
     #Split categories into separate columns
     categories = df['categories'].str.split(pat=';',expand=True)
     
     #Rename the column names of categories
     row = categories.iloc[0]
-    category_colnames = row
+    category_colnames = row.str.split(pat='-',expand=True)[0]
     categories.columns = category_colnames
     
     #Convert category values to numbers 0 or 1
     for column in categories:
         categories[column] = categories[column].str.strip().str[-1]
         categories[column] = categories[column].astype(int)
-    categories.rename(columns={"1": "related-1"}, inplace = True)
+    categories.rename(columns={"1": "related"}, inplace = True)
     
     #Drop the original categories column from df
     df = df.drop(['categories'],axis=1)
@@ -40,13 +59,22 @@ def clean_data(df):
     df = df.drop_duplicates()
     
     #Remove the values equal to 2
-    df = df[df['related-1']!=2]
+    df = df[df['related']!=2]
     
     return df
 
 
 def save_data(df, database_filename):
-
+    """
+    This is the function that loads the to a SQL lite DB and table
+    
+    Input
+    df - the dataframe
+    database_filename - the path and name of the DB
+    
+    Output
+    No output
+    """
     engine = create_engine('sqlite:///' + database_filename)
     df.to_sql('DisasterResponse', engine, index=False)
     
@@ -54,6 +82,10 @@ def save_data(df, database_filename):
 
 
 def main():
+    """
+    The main function that calls the rest ones
+    """
+    
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
